@@ -21,6 +21,8 @@ Thumbs.db
 *~
 *.sw[a-z]
 *.bak
+.*.sw[a-z]
+.*.bak
 REVISION
 TAGS*
 tmtags
