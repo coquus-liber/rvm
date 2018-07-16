@@ -1,6 +1,4 @@
 
-require 'pathname'
-
 module RVM
   def rvm_node
     @rvm_node ||= node['rvm'] || {}
@@ -56,70 +54,5 @@ module RVM
 
   def key_source
     @key_source ||= 'https://rvm.io/mpapis.asc'
-  end
-
-  def install_rvm
-    directory rvm_dir.to_s do
-      user self.rvm_user
-      group self.rvm_group
-      mode '0755'
-    end
-
-    remote_file key_file.to_s do
-      source self.key_source
-      owner self.rvm_user
-      group self.rvm_group
-      mode '0644'
-      action :create
-    end
-
-    rvm_key rvm_user do
-      key_file self.key_file.to_s
-      action :import
-    end
-
-    git src_dir.to_s do
-      repository self.rvm_repo
-      revision self.revision
-      user self.rvm_user
-      group self.rvm_group
-    end
-
-    execute 'install rvm' do
-      cwd src_dir.to_s
-      user self.rvm_user
-      group self.rvm_user
-      environment(
-        'USER': self.rvm_user,
-        'USERNAME': self.rvm_user,
-        'LOGNAME': self.rvm_user
-      )
-      command "./install"
-      creates installed_file.to_s
-      live_stream true
-    end
-  end
-
-  def rvm_exec *cmd
-    execute "rvm #{cmd.join(' ')}" do
-      cwd self.home.to_s
-      user self.rvm_user
-      group self.rvm_user
-      environment(
-        'USER': self.rvm_user,
-        'USERNAME': self.rvm_user,
-        'LOGNAME': self.rvm_user
-      )
-      command([rvm_bin.to_s, *cmd].join(' '))
-      live_stream true
-    end
-  end
-
-  def rvm_install *rubies
-    rvm_exec 'install', *rubies
-  end
-
-  def rvm_use ruby
-    rvm_exec 'use', ruby
   end
 end

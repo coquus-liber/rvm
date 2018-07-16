@@ -16,7 +16,6 @@ action :import do
     user new_resource.user
     group new_resource.user
     environment(
-      'HOME': new_resource.home_dir,
       'USER': new_resource.user,
       'USERNAME': new_resource.user,
       'LOGNAME': new_resource.user
