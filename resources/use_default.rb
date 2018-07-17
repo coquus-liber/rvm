@@ -1,5 +1,5 @@
 
-property :gems, [String,Array], name_property: true
+property :version, String, name_property: true
 property :user, String
 property :group, String
 
@@ -9,12 +9,11 @@ load_current_value do
 end
 
 action :run do
-  rvm_bash "gem install #{new_resource.version}" do
+  rvm_bash "rvm install #{new_resource.version}" do
     user new_resource.user
     group new_resource.user
-    # rvm use as guard clause
     code <<~BASH
-      gem install #{new_resource.gems}
+      rvm use --default #{new_resource.version} 
     BASH
   end
 end

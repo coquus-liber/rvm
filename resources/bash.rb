@@ -1,5 +1,5 @@
 
-property :command, String, name_property: true
+property :code, String, name_property: true
 property :user, String
 property :group, String
 
@@ -9,8 +9,8 @@ load_current_value do
 end
 
 action :run do
-  script new_resource.command do
-    interpreter "bash"
+  bash new_resource.name do
+    guard_interpreter :bash
     flags "--login"
     cwd ::Dir.home(new_resource.user)
     user new_resource.user
@@ -20,9 +20,7 @@ action :run do
       'USERNAME': new_resource.user,
       'LOGNAME': new_resource.user
     )
-    code <<~BASH
-      #{new_resource.command}
-    BASH
+    code new_resource.code
     # not_if { ::File.exist?(extract_path) }
     live_stream true
   end
