@@ -1,6 +1,5 @@
 
 install_rvm "vagrant" # install rvm for user 'vagrant'
-
 rvm_bash "env"
 rvm_bash "rvm info"
 rvm_install 'ruby'

@@ -9,7 +9,7 @@ load_current_value do
 end
 
 action :run do
-  rvm_bash "gem install #{new_resource.version}" do
+  rvm_bash "gem install #{new_resource.gems}" do
     user new_resource.user
     group new_resource.user
     # rvm use as guard clause
