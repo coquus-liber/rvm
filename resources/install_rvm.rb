@@ -69,6 +69,8 @@ action :run do
   rvm_key new_resource.user do
     key_file self.key_file
     action :import
+    user new_resource.user
+    group new_resource.group
     sensitive true
   end
 
