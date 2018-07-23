@@ -66,12 +66,23 @@ action :run do
     sensitive true
   end
 
-  rvm_key new_resource.user do
-    key_file self.key_file
-    action :import
+  directory new_resource.gnupg_dir do
     user new_resource.user
     group new_resource.group
-    sensitive true
+    mode '0700'
+  end
+
+  execute 'install mpapis public keys' do
+    cwd new_resource.home_dir
+    user new_resource.user
+    group new_resource.group
+    environment(
+      'USER': new_resource.user,
+      'USERNAME': new_resource.user,
+      'LOGNAME': new_resource.user
+    )
+    command "gpg --import #{new_resource.key_file}"
+    live_stream true
   end
 
   git src_dir do
