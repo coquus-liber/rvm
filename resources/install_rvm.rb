@@ -29,6 +29,10 @@ action_class do
     @rvm_dir ||= ::File.join(new_resource.home, '.rvm')
   end
 
+  def gnupg_dir
+    @rvm_dir ||= ::File.join(new_resource.home, '.gnupg')
+  end
+
   def key_file
     @key_file ||= ::File.join(rvm_dir,'mpapis.asc')
   end
@@ -66,14 +70,14 @@ action :run do
     sensitive true
   end
 
-  directory new_resource.gnupg_dir do
+  directory gnupg_dir do
     user new_resource.user
     group new_resource.group
     mode '0700'
   end
 
   execute 'install mpapis public keys' do
-    cwd new_resource.home_dir
+    cwd new_resource.home
     user new_resource.user
     group new_resource.group
     environment(
@@ -81,7 +85,7 @@ action :run do
       'USERNAME': new_resource.user,
       'LOGNAME': new_resource.user
     )
-    command "gpg --import #{new_resource.key_file}"
+    command "gpg --import #{key_file}"
     live_stream true
   end
 
