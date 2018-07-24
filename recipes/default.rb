@@ -1,6 +1,6 @@
 
 rvm "vagrant" do
-  ruby %w(ruby)
+  ruby 'ruby'
   gems %w(rails)
 end
 
