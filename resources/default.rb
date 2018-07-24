@@ -9,6 +9,11 @@ property :rvm_bin, String, default: lazy {|r| ::File.join(r.bin_dir, 'rvm')}
 property :gnupg_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.gnupg')} 
 property :key_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'mpapis.asc')} 
 property :installed_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'installed.at')} 
+property :ruby, String, default: 'ruby'
+property :gems, Array, default: %w(rails)
+property :rvm_repo, String, default: 'https://github.com/rvm/rvm.git'
+property :revision, String, default: 'stable'
+property :key_source, String, default: 'https://rvm.io/mpapis.asc'
 property :env, Hash, default: lazy { |r|
   { 
     'HOME': r.home_dir, 
@@ -17,11 +22,6 @@ property :env, Hash, default: lazy { |r|
     'LOGNAME': r.user
   }
 }
-property :ruby, String, default: 'ruby'
-property :gems, Array, default: %w(rails)
-property :rvm_repo, String, default: 'https://github.com/rvm/rvm.git'
-property :revision, String, default: 'stable'
-property :key_source, String, default: 'https://rvm.io/mpapis.asc'
 
 # load the current state of the node from the system
 load_current_value do 
