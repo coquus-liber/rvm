@@ -1,4 +1,3 @@
-
 default[:rvm] = {
   keys: { 
     "Michal Papis": {
@@ -26,5 +25,3 @@ default[:rvm] = {
   user: 'vagrant',
   group: 'vagrant'
 }
-
-

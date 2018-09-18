@@ -1,4 +1,3 @@
-
 property :user, String, name_property: true
 property :group, String, default: lazy {|r| r.user }
 property :home_dir, String, default: lazy {|r| ::Dir.home(r.user) }
@@ -101,4 +100,3 @@ action :run do
     live_stream true
   end
 end
-
