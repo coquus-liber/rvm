@@ -3,6 +3,12 @@ property :user, String, name_property: true
 property :group, String, default: lazy {|r| r.user }
 property :home_dir, String, default: lazy {|r| ::Dir.home(r.user) }
 property :rvm_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.rvm')}
+property :config_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.config')}
+property :xfce_term_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'xfce4','terminal')}
+property :xfce_term_rc, String, default: lazy {|r| ::File.join(r.xfce_term_dir, 'terminalrc')}
+property :terminator_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'terminator')}
+property :terminator_config, String, default: lazy {|r| ::File.join(r.terminator_dir, 'config')}
+
 property :src_dir, String, default: lazy {|r| ::File.join(r.rvm_dir, 'src')} 
 property :bin_dir, String, default: lazy {|r| ::File.join(r.rvm_dir, 'bin')} 
 property :rvm_bin, String, default: lazy {|r| ::File.join(r.bin_dir, 'rvm')} 
@@ -99,6 +105,34 @@ action :run do
     BASH
     # not_if { ::File.exist?(extract_path) }
     live_stream true
+  end
+
+  directory xfce_term_dir do
+    user new_resource.user
+    group new_resource.group
+    mode '0755'
+    recursive true
+  end
+
+  cookbook_file xfce_term_rc do
+    source "xfce_term_rc"
+    user new_resource.user
+    group new_resource.group
+    mode '0664'
+  end
+
+  directory terminator_dir do
+    user new_resource.user
+    group new_resource.group
+    mode '0755'
+    recursive true
+  end
+
+  cookbook_file terminator_config do
+    source "terminator_config"
+    user new_resource.user
+    group new_resource.group
+    mode '0664'
   end
 end
 
