@@ -1,4 +1,3 @@
-
 module RVM
   def rvm_node
     @rvm_node ||= node['rvm'] || {}
