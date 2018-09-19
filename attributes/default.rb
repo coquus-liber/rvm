@@ -23,5 +23,10 @@ default[:rvm] = {
   rubies: %w(ruby-2.5.1),
   use: "ruby-2.5.1",
   user: 'vagrant',
-  group: 'vagrant'
+  group: 'vagrant',
+  rc: {
+    ignore: %w(
+      allGemfiles
+    )
+  }
 }
