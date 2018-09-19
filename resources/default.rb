@@ -106,28 +106,28 @@ action :run do
     live_stream true
   end
 
-  directory xfce_term_dir do
+  directory new_resource.xfce_term_dir do
     user new_resource.user
     group new_resource.group
     mode '0755'
     recursive true
   end
 
-  cookbook_file xfce_term_rc do
+  cookbook_file new_resource.xfce_term_rc do
     source "xfce_term_rc"
     user new_resource.user
     group new_resource.group
     mode '0664'
   end
 
-  directory terminator_dir do
+  directory new_resource.terminator_dir do
     user new_resource.user
     group new_resource.group
     mode '0755'
     recursive true
   end
 
-  cookbook_file terminator_config do
+  cookbook_file new_resource.terminator_config do
     source "terminator_config"
     user new_resource.user
     group new_resource.group
