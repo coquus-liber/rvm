@@ -2,8 +2,15 @@
 driver:
   name: docker
   use_sudo: false
+  http_proxy: <%= ENV['http_proxy'] %>
+  https_proxy: <%= ENV['https_proxy'] %>
+  no_proxy: <%= ENV['no_proxy'] %>
   provision_command: 
     - mkdir -p /run/sshd
+    - sed -i 's/archive/us\.archive/g' /etc/apt/sources.list
+    - echo "Acquire::http::Proxy \"$http_proxy\";\nAcquire::https::Proxy \"$https_proxy\";" > /etc/apt/apt.conf.d/01_proxy
+    - env | grep -i 'proxy' >> /etc/environment
+    - apt-get update
 
 provisioner:
   name: chef_zero
