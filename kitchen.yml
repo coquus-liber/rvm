@@ -17,3 +17,5 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
+      rvm:
+        user: 'kitchen'

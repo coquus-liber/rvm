@@ -20,10 +20,10 @@ default[:rvm] = {
     repo: 'https://github.com/rvm/rvm.git',
     version: 'stable'
   },
-  rubies: %w(ruby-2.5.1),
-  use: "ruby-2.5.1",
+  ruby: 'ruby-2.5.1',
+  gems: %w(rspec rails),
   user: 'vagrant',
-  group: 'vagrant',
+  group: nil,
   rc: {
     ignore: %w(
       allGemfiles

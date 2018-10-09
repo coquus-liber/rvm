@@ -4,87 +4,87 @@ rvm_group = rvm['group'] || rvm_user
 rvm_home = '/home/' + rvm_user, # decent guess
 
 rvm_env = { 
-  'HOME': '/home/' + rvm_user, # decent guess
+  'HOME': rvm_home,
   'USER': rvm_user,
   'USERNAME': rvm_user,
   'LOGNAME': rvm_user 
 }
 
 # curl -sSL https://rvm.io/mpapis.asc
-directory '/home/vagrant/.rvm' do
-  user 'vagrant'
-  group 'vagrant'
+directory File.join(rvm_home,'.rvm') do
+  user rvm_user
+  group rvm_user
   mode '0755'
 end
 
-directory '/home/vagrant/.gnupg' do
-  user 'vagrant'
-  group 'vagrant'
+directory File.join(rvm_home,".gnupg") do
+  user rvm_user
+  group rvm_user
   mode '0700'
 end
 
-remote_file '/home/vagrant/.rvm/mpapis.asc' do
+remote_file File.join(rvm_home,".rvm/mpapis.asc") do
   source 'https://rvm.io/mpapis.asc'
-  owner 'vagrant'
-  group 'vagrant'
+  owner rvm_user
+  group rvm_user
   mode '0644'
   action :create
 end
 
 execute 'install mpapis public keys' do
-  cwd '/home/vagrant'
-  user 'vagrant'
-  group 'vagrant'
-  environment(vagrant)
-  command "gpg --import /home/vagrant/.rvm/mpapis.asc"
+  cwd rvm_home
+  user rvm_user
+  group rvm_user
+  environment(rvm_home)
+  command "gpg --import #{rvm_home}/.rvm/mpapis.asc"
   live_stream true
   # not_if "gpg --list-keys D39DC0E3"
   not_if "gpg --list-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
 end
 
-git '/home/vagrant/.rvm/src' do
+git File.join(rvm_home,".rvm/src") do
   repository node[:rvm][:git][:repo]
   revision node[:rvm][:git][:version]
-  user 'vagrant'
-  group 'vagrant'
+  user rvm_user
+  group rvm_user
 end
 
 bash 'install rvm' do
-  cwd '/home/vagrant/.rvm/src'
-  user 'vagrant'
-  group 'vagrant'
-  environment(vagrant)
+  cwd File.join(rvm_home,".rvm/src")
+  user rvm_user
+  group rvm_user
+  environment(rvm_env)
   code "./install --ignore-dotfiles"
-  creates '/home/vagrant/.rvm/installed.at'
+  creates File.join(rvm_home,".rvm/installed.at")
   live_stream true
 end
 
-cookbook_file '/home/vagrant/.bash_profile' do
+cookbook_file File.join(rvm_home,".bash_profile") do
   source 'dot/bash_profile'
   mode "0755"
 end
 
-cookbook_file '/home/vagrant/.bashrc' do
+cookbook_file File.join(rvm_home,".bashrc") do
   source 'dot/bashrc'
   mode "0755"
 end
 
-cookbook_file '/home/vagrant/.profile' do
+cookbook_file File.join(rvm_home,".profile") do
   source 'dot/profile'
   mode "0755"
 end
 
 node[:rvm][:rubies].each do |ruby|
   execute "rvm install #{ruby}" do
-    command "sudo -iHu vagrant rvm install #{ruby}"
-    creates "/home/vagrant/.rvm/rubies/#{ruby}"
+    command "sudo -iHu #{rvm_user} rvm install #{ruby}"
+    creates "#{rvm_home}/.rvm/rubies/#{ruby}"
     live_stream true
   end
 end
 
 rvm_ruby = node[:rvm][:use]
 execute "rvm use #{rvm_ruby}" do
-  command "sudo -iHu vagrant rvm use #{rvm_ruby} --default"
-  creates "/home/vagrant/.rvm/rubies/default"
+  command "sudo -iHu #{rvm_user} rvm use #{rvm_ruby} --default"
+  creates "#{rvm_home}/.rvm/rubies/default"
   live_stream true
 end
