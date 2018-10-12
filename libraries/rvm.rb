@@ -4,7 +4,7 @@ module RVM
   end
 
   def rvm_user 
-    @rvm_user ||= rvm_node['user'] || 'vagrant'
+    @rvm_user ||= rvm_node['user']
   end
 
   def rvm_group
