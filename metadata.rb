@@ -8,3 +8,5 @@ version '0.1.2'
 chef_version '>= 12.14' if respond_to?(:chef_version)
 issues_url 'https://github.com/coquus-liber/rvm/issues'
 source_url 'https://github.com/coquus-liber/rvm'
+depends 'ubuntu'
+supports 'ubuntu'
