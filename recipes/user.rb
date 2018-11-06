@@ -1,29 +1,32 @@
 
-rvm_user = node[:rvm][:user]
-rvm_group = node[:rvm][:group] || rvm_user
-rvm_user_home = node[:rvm][:home] || "/home/#{rvm_user}"
+require 'etc'
 
-user rvm_user do
-  home rvm_user_home
-  shell '/bin/bash'
-  manage_home true
-end
-
-group rvm_user do
-  members rvm_user
-end
-
-group 'sudoers' do
-  members rvm_user
-end
-
-directory rvm_user_home do
-  owner rvm_user
-  group rvm_group
-end
+begin
+  user = 
+    if username = node[:rvm][:user]
+      Etc.getpwnam(username)
+    else
+      Etc.getpwuid(1000)
+    end
+  node.default[:rvm][:user] = rvm_user = user.name
+  rvm_user_home = node[:rvm][:home] || user.dir
   
-file "/etc/sudoers.d/99_#{rvm_user}" do
-  content "#{rvm_user} ALL=(ALL) NOPASSWD:ALL"
+  group = 
+    if groupname = node[:rvm][:group]
+      Etc.getgrnam(groupname)
+    else
+      Etc.getgrgid(user.gid)
+    end
+
+  rvm_group = group.name
+
+  group 'sudoers' do
+    members rvm_user
+  end
+
+  file "/etc/sudoers.d/99_#{rvm_user}" do
+    content "#{rvm_user} ALL=(ALL) NOPASSWD:ALL"
+  end
 end
 
 

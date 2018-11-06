@@ -15,6 +15,7 @@ property :gnupg_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.gnupg'
 property :key_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'mpapis.asc')} 
 property :installed_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'installed.at')} 
 property :ruby, String, default: 'ruby'
+property :rubygems, String, default: 'current'
 property :gems, Array, default: %w(rails)
 property :rvm_repo, String, default: 'https://github.com/rvm/rvm.git'
 property :revision, String, default: 'stable'
@@ -100,6 +101,7 @@ action :run do
       rvm use #{new_resource.ruby} || \
       rvm install #{new_resource.ruby} && \
       rvm use --default #{new_resource.ruby} 
+      rvm rubygems #{new_resource.rubygems}
       gem install #{new_resource.gems.join(' ')}
     BASH
     # not_if { ::File.exist?(extract_path) }
