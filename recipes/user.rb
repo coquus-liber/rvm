@@ -10,6 +10,7 @@ begin
     end
   node.default[:rvm][:user] = rvm_user = user.name
   rvm_user_home = node[:rvm][:home] || user.dir
+  node.default[:rvm][:home] = rvm_user_home
   
   group = 
     if groupname = node[:rvm][:group]
