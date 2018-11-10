@@ -12,8 +12,8 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[rvm::update]
-      - recipe[rvm::default]
+      - recipe[ubuntu]
+      - recipe[rvm]
     verifier:
       inspec_tests:
         - test/integration/default
