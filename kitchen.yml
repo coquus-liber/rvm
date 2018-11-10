@@ -12,6 +12,7 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[rvm::update]
       - recipe[rvm::default]
     verifier:
       inspec_tests:
