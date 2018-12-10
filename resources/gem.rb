@@ -7,7 +7,7 @@ load_current_value do
   group(node[:rvm][:group]) unless property_is_set? :group
 end
 
-action :run do
+action :install do
   rvm_bash "gem install #{new_resource.gems}" do
     user new_resource.user
     group new_resource.user

@@ -22,7 +22,7 @@ default[:rvm] = {
   },
   ruby: 'ruby-2.5.3',
   rubygems: 'current',
-  gems: %w(rspec rails rspec-rails),
+  gems: %w(rspec rails rspec-rails bundler rake),
   user: nil,
   group: nil,
   users: [],
