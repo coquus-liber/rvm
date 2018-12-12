@@ -10,7 +10,8 @@ property :env, Hash, default: lazy { |r|
         'HOME': r.home, 
         'USER': r.user, 
         'USERNAME': r.user, 
-        'LOGNAME': r.user
+        'LOGNAME': r.user,
+        'PATH': "/usr/local/bin:/usr/bin:/bin"
       }
     }
 property :rvm_dir, String, default: lazy {|r| ::File.join(r.home,'.rvm') }

@@ -1,0 +1,2 @@
+
+rvm_gem 'thor' 
