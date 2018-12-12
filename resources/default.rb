@@ -1,17 +1,24 @@
-property :user, String, name_property: true
-property :group, String, default: lazy {|r| r.user }
-property :home_dir, String, default: lazy {|r| ::Dir.home(r.user) }
-property :rvm_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.rvm')}
-property :config_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.config')}
-property :xfce_term_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'xfce4','terminal')}
-property :xfce_term_rc, String, default: lazy {|r| ::File.join(r.xfce_term_dir, 'terminalrc')}
-property :terminator_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'terminator')}
-property :terminator_config, String, default: lazy {|r| ::File.join(r.terminator_dir, 'config')}
+
+property :user, String, default: lazy{ |r| r.name || ::Etc.getpwuid(1000).name }
+property :usr, Etc::Passwd, default: lazy{ |r| ::Etc.getpwnam(r.user) }
+property :grp, Etc::Group, default: lazy{ |r| ::Etc.getgrgid(r.usr.gid) }
+property :group, String, default: lazy {|r| r.grp.name }
+property :home, String, default: lazy {|r| r.usr.dir }
+property :cwd, String, default: lazy {|r| r.home }
+property :env, Hash, default: lazy { |r|
+      { 
+        'HOME': r.home, 
+        'USER': r.user, 
+        'USERNAME': r.user, 
+        'LOGNAME': r.user
+      }
+    }
+property :rvm_dir, String, default: lazy {|r| ::File.join(r.home,'.rvm') }
 
 property :src_dir, String, default: lazy {|r| ::File.join(r.rvm_dir, 'src')} 
 property :bin_dir, String, default: lazy {|r| ::File.join(r.rvm_dir, 'bin')} 
 property :rvm_bin, String, default: lazy {|r| ::File.join(r.bin_dir, 'rvm')} 
-property :gnupg_dir, String, default: lazy {|r| ::File.join(r.home_dir, '.gnupg')} 
+property :gnupg_dir, String, default: lazy {|r| ::File.join(r.home, '.gnupg')} 
 property :key_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'mpapis.asc')} 
 property :installed_file, String, default: lazy {|r| ::File.join(r.rvm_dir, 'installed.at')} 
 property :ruby, String, default: 'ruby'
@@ -20,14 +27,13 @@ property :gems, Array, default: %w(rails)
 property :rvm_repo, String, default: 'https://github.com/rvm/rvm.git'
 property :revision, String, default: 'stable'
 property :key_source, String, default: 'https://rvm.io/mpapis.asc'
-property :env, Hash, default: lazy { |r|
-  { 
-    'HOME': r.home_dir, 
-    'USER': r.user, 
-    'USERNAME': r.user, 
-    'LOGNAME': r.user
-  }
-}
+
+property :config_dir, String, default: lazy {|r| ::File.join(r.home, '.config')}
+property :xfce_term_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'xfce4','terminal')}
+property :xfce_term_rc, String, default: lazy {|r| ::File.join(r.xfce_term_dir, 'terminalrc')}
+property :terminator_dir, String, default: lazy {|r| ::File.join(r.config_dir, 'terminator')}
+property :terminator_config, String, default: lazy {|r| ::File.join(r.terminator_dir, 'config')}
+
 
 # load the current state of the node from the system
 load_current_value do 
@@ -41,6 +47,7 @@ action_class do
 end
 
 action :run do
+  raise "user is nil" unless new_resource.user
   raise "group is nil" unless new_resource.group
 
   directory new_resource.rvm_dir do # '.rvm' do
@@ -65,7 +72,7 @@ action :run do
   end
 
   execute 'install mpapis public keys' do
-    cwd new_resource.home_dir
+    cwd new_resource.cwd
     user new_resource.user
     group new_resource.group
     environment new_resource.env
@@ -93,7 +100,7 @@ action :run do
   bash new_resource.name do
     guard_interpreter :bash
     flags "--login"
-    cwd new_resource.home_dir
+    cwd new_resource.home
     user new_resource.user
     group new_resource.group
     environment new_resource.env

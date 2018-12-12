@@ -1,18 +1,21 @@
-property :name, String, name_property: true
-property :user, String
-property :group, String, default: lazy {|r| r.user }
-property :home, String, default: lazy {|r| ::Dir.home(r.user) }
-property :cwd, String, default: lazy {|r| r.home }
-property :env, Hash, default: lazy { |r|
-  { 
-    'HOME': r.home, 
-    'USER': r.user, 
-    'USERNAME': r.user, 
-    'LOGNAME': r.user
-  }
-}
+
 property :command
 property :creates
+
+property :user, String, default: lazy{ |r| ::Etc.getpwuid(1000).name }
+property :usr, Etc::Passwd, default: lazy{ |r| ::Etc.getpwnam(r.user) }
+property :grp, Etc::Group, default: lazy{ |r| ::Etc.getgrgid(r.usr.gid) }
+property :group, String, default: lazy {|r| r.grp.name }
+property :home, String, default: lazy {|r| r.usr.dir }
+property :cwd, String, default: lazy {|r| r.home }
+property :env, Hash, default: lazy { |r|
+      { 
+        'HOME': r.home, 
+        'USER': r.user, 
+        'USERNAME': r.user, 
+        'LOGNAME': r.user
+      }
+    }
 
 # load the current state of the node from the system
 load_current_value do 

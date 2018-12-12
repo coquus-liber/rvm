@@ -1,14 +1,5 @@
-property :user, String, name_property: true
-property :group, String, default: lazy {|r| r.user }
-property :home, String, default: lazy {|r| ::Dir.home(r.user) }
-property :env, Hash, default: lazy { |r|
-  { 
-    'HOME': r.home, 
-    'USER': r.user, 
-    'USERNAME': r.user, 
-    'LOGNAME': r.user
-  }
-}
+
+include Properties
 
 load_current_value do 
 end
