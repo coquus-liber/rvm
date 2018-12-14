@@ -28,7 +28,6 @@ action :install do
     group new_resource.user
     environment new_resource.env
     code <<~BASH
-      env
       gem install #{new_resource.gems}
     BASH
     live_stream true
