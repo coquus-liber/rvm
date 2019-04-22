@@ -20,9 +20,9 @@ default[:rvm] = {
     repo: 'https://github.com/rvm/rvm.git',
     version: 'stable'
   },
-  ruby: 'ruby-2.5.3',
+  ruby: 'ruby-2.5.5',
   rubygems: 'current',
-  gems: %w(rspec rails rspec-rails bundler:1.17.3 rake),
+  gems: %w(rspec rails rspec-rails bundler rake),
   user: nil,
   group: nil,
   users: [],
